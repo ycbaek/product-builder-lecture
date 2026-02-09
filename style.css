@@ -23,13 +23,23 @@ body.dark-mode {
 body {
     font-family: sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    background-color: orange; /* Changed to orange */
+    padding: 2rem 1rem;
+    background-color: orange;
     color: var(--text-color);
-    /* Removed background-image to make orange visible */
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#disqus_thread {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--app-background);
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px var(--box-shadow-color);
 }
 
 #app {
