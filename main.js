@@ -1,4 +1,4 @@
-const lottoContainer = document.getElementById('lotto-container');
+const menuContainer = document.getElementById('menu-container');
 const generateButton = document.getElementById('generate-button');
 const themeToggleButton = document.getElementById('theme-toggle');
 const body = document.body;
@@ -25,41 +25,28 @@ themeToggleButton.addEventListener('click', () => {
     setTheme(currentTheme === 'dark' ? 'light' : 'dark');
 });
 
+const dinnerMenus = [
+    "Pizza", "Hamburger", "Sushi", "Pasta", "Taco",
+    "Steak", "Fried Chicken", "Kimchi Jjigae", "Bibimbap", "Ramen",
+    "Pho", "Pad Thai", "Curry", "Burrito", "Salad"
+];
 
-function generateNumbers() {
-    const numbers = new Set();
-    while (numbers.size < 6) {
-        numbers.add(Math.floor(Math.random() * 45) + 1);
-    }
-    return Array.from(numbers).sort((a, b) => a - b);
+function generateMenu() {
+    const randomIndex = Math.floor(Math.random() * dinnerMenus.length);
+    return dinnerMenus[randomIndex];
 }
 
-function getNumberColor(number) {
-    if (number <= 10) return '#f44336'; // Red
-    if (number <= 20) return '#ff9800'; // Orange
-    if (number <= 30) return '#ffeb3b'; // Yellow (use a darker text for this)
-    if (number <= 40) return '#2196f3'; // Blue
-    return '#4caf50'; // Green
-}
-
-function displayNumbers(numbers) {
-    lottoContainer.innerHTML = '';
-    numbers.forEach(number => {
-        const numberElement = document.createElement('div');
-        numberElement.classList.add('lotto-number');
-        numberElement.textContent = number;
-        const backgroundColor = getNumberColor(number);
-        numberElement.style.backgroundColor = backgroundColor;
-        if (backgroundColor === '#ffeb3b') { // If yellow, use dark text
-            numberElement.style.color = '#333';
-        }
-        lottoContainer.appendChild(numberElement);
-    });
+function displayMenu(menu) {
+    menuContainer.innerHTML = '';
+    const menuElement = document.createElement('div');
+    menuElement.classList.add('menu-item');
+    menuElement.textContent = menu;
+    menuContainer.appendChild(menuElement);
 }
 
 function handleGenerateClick() {
-    const numbers = generateNumbers();
-    displayNumbers(numbers);
+    const menu = generateMenu();
+    displayMenu(menu);
 }
 
 generateButton.addEventListener('click', handleGenerateClick);

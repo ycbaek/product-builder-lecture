@@ -3,7 +3,7 @@
     --text-color: #333;
     --app-background: white;
     --box-shadow-color: rgba(0, 0, 0, 0.1);
-    --lotto-number-color: white;
+    --menu-item-text-color: #333;
     --generate-button-bg: #4a90e2;
     --generate-button-shadow: rgba(74, 144, 226, 0.4);
     --generate-button-hover-shadow: rgba(74, 144, 226, 0.6);
@@ -14,7 +14,7 @@ body.dark-mode {
     --text-color: #f0f0f0;
     --app-background: #444;
     --box-shadow-color: rgba(0, 0, 0, 0.5);
-    --lotto-number-color: #eee;
+    --menu-item-text-color: #eee;
     --generate-button-bg: #673ab7; /* A darker, purplish blue for dark mode */
     --generate-button-shadow: rgba(103, 58, 183, 0.4);
     --generate-button-hover-shadow: rgba(103, 58, 183, 0.6);
@@ -41,31 +41,28 @@ body {
     transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-#lotto-container {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin: 2rem 0;
-}
-
-.lotto-number {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+#menu-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
+    min-height: 100px;
+    margin: 2rem 0;
+}
+
+.menu-item {
+    font-size: 2rem;
     font-weight: bold;
-    color: var(--lotto-number-color);
+    color: var(--text-color);
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    background-color: var(--app-background);
     box-shadow: 0 4px 8px var(--box-shadow-color);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 #generate-button {
     padding: 1rem 2rem;
     font-size: 1.2rem;
-    color: var(--lotto-number-color);
+    color: white;
     background-color: var(--generate-button-bg);
     border: none;
     border-radius: 0.5rem;
@@ -78,3 +75,4 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px var(--generate-button-hover-shadow);
 }
+
