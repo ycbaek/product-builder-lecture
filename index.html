@@ -1,49 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의하기 (Contact Us)</title>
+    <title>오늘 뭐 먹지? - 음식 메뉴 추천</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <h1>문의하기 (Contact Us)</h1>
-        <button id="theme-toggle">Toggle Theme</button>
-        <form action="https://formspree.io/f/xjgekyen" method="POST">
-            <label for="name">이름:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="email">이메일:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="message">메시지:</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-            
-            <button type="submit">보내기</button>
-        </form>
+        <h1>오늘 뭐 먹지?</h1>
+        <p>버튼을 눌러서 오늘의 메뉴를 추천받아 보세요!</p>
+        <div id="menu-container"></div>
+        <button id="generate-button">메뉴 추천받기</button>
+        <button id="theme-toggle">다크 모드</button>
     </div>
-    
-    <div id="disqus_thread"></div>
-    <script>
-        /**
-        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
-        /*
-        var disqus_config = function () {
-        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-        };
-        */
-        (function() { // DON'T EDIT BELOW THIS LINE
-        var d = document, s = d.createElement('script');
-        s.src = 'https://productbuilder-vtbf1u3xvz.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
     <script src="main.js"></script>
 </body>
 </html>
