@@ -6,6 +6,12 @@ const startButton = document.getElementById("start-button");
 const webcamContainer = document.getElementById("webcam-container");
 const resultContainer = document.getElementById("result-container");
 const messageContainer = document.getElementById("message-container");
+const countdownEl = document.getElementById("countdown");
+const resultEmoji = document.getElementById("result-emoji");
+const shareContainer = document.getElementById("share-container");
+const retryButton = document.getElementById("retry-button");
+const shareTwitter = document.getElementById("share-twitter");
+const shareCopy = document.getElementById("share-copy");
 
 const dogMessages = [
     "충성! 당신은 강아지상이에요! 🐶",
@@ -19,11 +25,21 @@ const catMessages = [
     "쿨하고 세련된 매력의 고양이상이시네요!",
 ];
 
+let lastResult = "";
+
 startButton.addEventListener("click", init);
+retryButton.addEventListener("click", retry);
+shareTwitter.addEventListener("click", shareToTwitter);
+shareCopy.addEventListener("click", copyLink);
 
 async function init() {
     startButton.textContent = "로딩 중...";
     startButton.disabled = true;
+    shareContainer.style.display = "none";
+    resultEmoji.textContent = "";
+    resultEmoji.className = "";
+    messageContainer.textContent = "";
+    messageContainer.className = "";
 
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
@@ -65,7 +81,17 @@ async function init() {
         resultContainer.appendChild(barWrapper);
     }
 
-    messageContainer.textContent = "분석 중... 3초만 기다려 주세요!";
+    // Countdown 3, 2, 1
+    for (let sec = 3; sec >= 1; sec--) {
+        countdownEl.textContent = sec;
+        countdownEl.className = "active";
+        await sleep(800);
+        countdownEl.className = "";
+        await sleep(200);
+    }
+    countdownEl.style.display = "none";
+
+    messageContainer.textContent = "분석 중...";
     messageContainer.className = "";
 
     const startTime = Date.now();
@@ -93,7 +119,7 @@ async function init() {
                 label.textContent = className + ": " + percent + "%";
                 bar.style.width = percent + "%";
 
-                if (className.toLowerCase().includes("강아지") || className.toLowerCase().includes("dog")) {
+                if (isDogClass(className)) {
                     bar.style.backgroundColor = "#f59e0b";
                 } else {
                     bar.style.backgroundColor = "#8b5cf6";
@@ -125,9 +151,59 @@ async function init() {
         }
     }
 
-    const isDog = bestClass.toLowerCase().includes("강아지") || bestClass.toLowerCase().includes("dog");
+    const isDog = isDogClass(bestClass);
     const messages = isDog ? dogMessages : catMessages;
     const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+
+    resultEmoji.textContent = isDog ? "🐶" : "🐱";
+    resultEmoji.className = "show";
     messageContainer.textContent = randomMsg;
     messageContainer.className = isDog ? "result-dog" : "result-cat";
+    lastResult = isDog ? "강아지상" : "고양이상";
+
+    shareContainer.style.display = "block";
+}
+
+function retry() {
+    // Remove old webcam canvas
+    const canvas = webcamContainer.querySelector("canvas");
+    if (canvas) canvas.remove();
+
+    countdownEl.style.display = "";
+    countdownEl.className = "";
+    countdownEl.textContent = "";
+    resultContainer.innerHTML = "";
+    resultEmoji.textContent = "";
+    resultEmoji.className = "";
+    messageContainer.textContent = "";
+    messageContainer.className = "";
+    shareContainer.style.display = "none";
+    startButton.style.display = "";
+    startButton.textContent = "다시 테스트하기";
+    startButton.disabled = false;
+}
+
+function shareToTwitter() {
+    const text = "AI 동물상 테스트 결과: 나는 " + lastResult + "! 너도 해봐!";
+    const url = window.location.href;
+    window.open(
+        "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url),
+        "_blank"
+    );
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        shareCopy.textContent = "복사 완료!";
+        setTimeout(() => { shareCopy.textContent = "링크 복사"; }, 2000);
+    });
+}
+
+function isDogClass(name) {
+    const lower = name.toLowerCase();
+    return lower.includes("강아지") || lower.includes("dog");
+}
+
+function sleep(ms) {
+    return new Promise((r) => setTimeout(r, ms));
 }
