@@ -65,52 +65,69 @@ async function init() {
         resultContainer.appendChild(barWrapper);
     }
 
-    window.requestAnimationFrame(loop);
-}
+    messageContainer.textContent = "분석 중... 3초만 기다려 주세요!";
+    messageContainer.className = "";
 
-async function loop() {
-    webcam.update();
-    await predict();
-    window.requestAnimationFrame(loop);
-}
+    const startTime = Date.now();
+    let bestClass = "";
+    let bestProb = 0;
+    let bestPrediction = null;
 
-async function predict() {
-    const prediction = await model.predict(webcam.canvas);
+    await new Promise((resolve) => {
+        async function loop() {
+            if (Date.now() - startTime >= 3000) {
+                resolve();
+                return;
+            }
+            webcam.update();
+            const prediction = await model.predict(webcam.canvas);
 
-    let topClass = "";
-    let topProb = 0;
+            for (let i = 0; i < maxPredictions; i++) {
+                const className = prediction[i].className;
+                const probability = prediction[i].probability;
+                const percent = (probability * 100).toFixed(1);
 
-    for (let i = 0; i < maxPredictions; i++) {
-        const className = prediction[i].className;
-        const probability = prediction[i].probability;
-        const percent = (probability * 100).toFixed(1);
+                const label = document.getElementById("label-" + i);
+                const bar = document.getElementById("bar-" + i);
 
-        const label = document.getElementById("label-" + i);
-        const bar = document.getElementById("bar-" + i);
+                label.textContent = className + ": " + percent + "%";
+                bar.style.width = percent + "%";
 
-        label.textContent = className + ": " + percent + "%";
-        bar.style.width = percent + "%";
+                if (className.toLowerCase().includes("강아지") || className.toLowerCase().includes("dog")) {
+                    bar.style.backgroundColor = "#f59e0b";
+                } else {
+                    bar.style.backgroundColor = "#8b5cf6";
+                }
 
-        if (className.toLowerCase().includes("강아지") || className.toLowerCase().includes("dog")) {
-            bar.style.backgroundColor = "#f59e0b";
-        } else {
-            bar.style.backgroundColor = "#8b5cf6";
+                if (probability > bestProb) {
+                    bestProb = probability;
+                    bestClass = className;
+                    bestPrediction = prediction;
+                }
+            }
+
+            window.requestAnimationFrame(loop);
         }
+        window.requestAnimationFrame(loop);
+    });
 
-        if (probability > topProb) {
-            topProb = probability;
-            topClass = className;
+    webcam.stop();
+
+    // Show final result
+    if (bestPrediction) {
+        for (let i = 0; i < maxPredictions; i++) {
+            const className = bestPrediction[i].className;
+            const percent = (bestPrediction[i].probability * 100).toFixed(1);
+            const label = document.getElementById("label-" + i);
+            const bar = document.getElementById("bar-" + i);
+            label.textContent = className + ": " + percent + "%";
+            bar.style.width = percent + "%";
         }
     }
 
-    if (topProb > 0.7) {
-        const isDog = topClass.toLowerCase().includes("강아지") || topClass.toLowerCase().includes("dog");
-        const messages = isDog ? dogMessages : catMessages;
-        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-        messageContainer.textContent = randomMsg;
-        messageContainer.className = isDog ? "result-dog" : "result-cat";
-    } else {
-        messageContainer.textContent = "조금 더 정면을 바라봐 주세요...";
-        messageContainer.className = "";
-    }
+    const isDog = bestClass.toLowerCase().includes("강아지") || bestClass.toLowerCase().includes("dog");
+    const messages = isDog ? dogMessages : catMessages;
+    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+    messageContainer.textContent = randomMsg;
+    messageContainer.className = isDog ? "result-dog" : "result-cat";
 }
