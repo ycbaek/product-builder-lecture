@@ -28,13 +28,17 @@ async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
-    model = await tmImage.load(modelURL, metadataURL);
-    maxPredictions = model.getTotalClasses();
-
     const flip = true;
-    webcam = new tmImage.Webcam(300, 300, flip);
-    await webcam.setup();
-    await webcam.play();
+    const tempWebcam = new tmImage.Webcam(300, 300, flip);
+
+    const [loadedModel] = await Promise.all([
+        tmImage.load(modelURL, metadataURL),
+        tempWebcam.setup().then(() => tempWebcam.play()),
+    ]);
+
+    model = loadedModel;
+    webcam = tempWebcam;
+    maxPredictions = model.getTotalClasses();
 
     startButton.style.display = "none";
     webcamContainer.appendChild(webcam.canvas);
